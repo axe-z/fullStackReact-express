@@ -1,8 +1,12 @@
 {
-  "name": "wp",
+  "name": "fullstack",
   "version": "1.0.0",
-  "description": "Webpack 2 the lessons",
+  "description": "Full Stack React Express",
   "main": "build.js",
+  "engines": {
+    "node": "8.1.3",
+    "npm": "5.3.0"
+  },
   "scripts": {
     "test": "NODE_ENV= test karma start",
     "startdev": "http-server",
