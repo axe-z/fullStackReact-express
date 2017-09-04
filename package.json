@@ -8,6 +8,7 @@
     "npm": "5.3.0"
   },
   "scripts": {
+    "start": "node index.js",
     "test": "NODE_ENV= test karma start",
     "startdev": "http-server",
     "express": "nodemon index.js",
