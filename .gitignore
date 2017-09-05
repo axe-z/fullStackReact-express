@@ -1,0 +1,5 @@
+node_modules/
+old shit/
+.tern-project
+.DS_Store
+config/
