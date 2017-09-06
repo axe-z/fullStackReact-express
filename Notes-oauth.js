@@ -231,92 +231,257 @@ accessToken:   ya29.Glu9BIA-XAVawCHE3Xyt2dPF6MJ9G30JD8CJhMoWowoG_JE8Gp0IzqAnfoow
 refreshToken: undefined
 
 profile:
-/*{ id: '108399082281546274727',
+/*{ id: '10831199082281546274727',
   displayName: 'Benoit Lafrance',
   name: { familyName: 'Lafrance', givenName: 'Benoit' },
-  emails: [ { value: 'benoitlafrance35@gmail.com', type: 'account' } ],
+  emails: [ { value: 'benoitlafrance3fu5@gmail.com', type: 'account' } ],
   photos: [ { value: 'https://lh3.googleusercontent.com/-LfIxBqeHg2k/AAAAAAAAAAI/AAAAAAAAABI/zhoBloucuiw/photo.jpg?sz=50' } ],
   gender: 'male',
   provider: 'google',
-  _raw: '{\n "kind": "plus#person",\n "etag": "\\"Sh4n9u6EtD24TM0RmWv7jTXojqc/B1eaY1FubFRtZmK70rghemzmfRo\\"",\n "gender": "male",\n "emails": [\n  {\n   "value": "benoitlafrance35@gmail.com",\n   "type": "account"\n  }\n ],\n "objectType": "person",\n "id": "108399082281546274727",\n "displ
-ayName": "Benoit Lafrance",\n "name": {\n  "familyName": "Lafrance",\n  "givenName": "Benoit"\n },\n "url": "https://plus.google.com/108399082281546274727",\n "image": {\n  "url": "https://lh3.googleusercontent.com/-LfIxBqeHg2k/AAAAAAAAAAI/AAAAAAAAABI/zhoBloucuiw/photo.jpg?sz=50",\n  "isDefa
+  _raw: '{\n "kind": "plus#person",\n "etag": "\\"Sh4n9u6EtD24TM0RmWv7jTXojqc/B1eaY1FubFRtZmK70rghemzmfRo\\"",\n "gender": "male",\n "emails": [\n  {\n   "value": "benoitlafrance35@gmail.com",\n   "type": "account"\n  }\n ],\n "objectType": "person",\n "id": "108399212082281546274727",\n "displ
+ayName": "Benoit Lafrance",\n "name": {\n  "familyName": "Lafrance",\n  "givenName": "Benoit"\n },\n "url": "https://plus.google.com/108399212082281546274727",\n "image": {\n  "url": "https://lh3.googleusercontent.com/-LfIxBqeHg2k/AAAAAAAAAAI/AAAAAAAAABI/zhoBloucuiw/photo.jpg?sz=50",\n  "isDefa
 ult": false\n },\n "isPlusUser": true,\n "language": "fr",\n "circledByCount": 0,\n "verified": false\n}\n',
   _json:
    { kind: 'plus#person',
-     etag: '"Sh4n9u6EtD24TM0RmWv7jTXojqc/B1eaY1FubFRtZmK70rghemzmfRo"',
-     gender: 'male',
-     emails: [ [Object] ],
-     objectType: 'person',
-     id: '108399082281546274727',
-     displayName: 'Benoit Lafrance',
-     name: { familyName: 'Lafrance', givenName: 'Benoit' },
-     url: 'https://plus.google.com/108399082281546274727',
-     image:
-      { url: 'https://lh3.googleusercontent.com/-LfIxBqeHg2k/AAAAAAAAAAI/AAAAAAAAABI/zhoBloucuiw/photo.jpg?sz=50',
-        isDefault: false },
-     isPlusUser: true,
-     language: 'fr',
-     circledByCount: 0,
-     verified: false } }
+  ...
 */
 
 
-/************************************ fichier complet ************************************/
-DONC EN GROS POUR PASSPORT C EST CA :
-const express = require('express');
+/************************************ fichier separes ************************************/
+en ce moement on a tout mis sur index.js... sur le serveur express. mieux vaut mettre la logique a part.
+
+///////////// METTRE LES ROUTES PRISES POUR AUTH///////////////////////////////////////
+ 'routes/authRoutes.js'
+const authRoutes = require('./routes/authRoutes');  // est un function donc de module .export
+authRoutes(app);
+OU
+require('./routes/authRoutes')(app);  // est une function donc de module.export;
+/*
 const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const keys = require('./config/keys');
+//app est de express , donc on veut ramener ca sur le serveur ou y a express.
 
-const app = express(); //on peut avoir plusieurs app.
+module.exports = (app) => {   //on passe app , express qui est necessaire.
 
-const port = process.env.PORT || 3000; // Pour Heroku
+  app.get('/auth/google', passport.authenticate('google', {
+      scope: ['profile', 'email']  //ce qu on veut ceci est un preset,on pourrait demander pour lire les email..
+    })
+  );
+  app.get('/auth/google/callback', passport.authenticate('google'));
 
-///'google' //1
+}
+*/
+
+/////////////INITIALISATION DE AUTH////////////////////////////////////////////////////
+
+'services/passport.js'
+require('./services/passport');  //on veut juste que ca roule ... donc pas de const pas d export.
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+///                        ///Initialiser Passport - cookie-session /////               ////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+/************************************ utiliser mongo avec passport ************************************/
+
+par defauklt passeport ne gere pas les cookies , il faut ajouter ca.
+ on devra utiliser des cookie pour determiner si un user a ou pas acces .
+donc premiere chose :
+
+npm install --save cookie-session
+
+dans le server, index.js ajouter:
+const cookieSession = require('cookie-session');
+const passport = require('passport'); //pour dire a passeport d utiliser ca
+
+
+///middleware
+app.use(cookieSession({
+    maxAge: 30 * 24 * 60 * 60 * 1000, //Se compte en milliseconde 30j 24h 60m 60s 1000milisecondes. = 30jours
+    keys: [keys.cookieKey]  //ca l air que ca prend un array...
+  })
+);
+app.use(passport.initialize()); //pour activer l utilisation de cookies
+app.use(passport.session());  //pour activer l utilisation de cookies
+
+
+
+
+
+MAINTENANT DANS PASSPORT.JS:
+ICI ON APPELE SERIALIZEUSER , MAIS COMME ARGUMENT, ON LUI PASSE UN FUNCTION, IL RECOIT L INSTANCE EN BAS ICI
+DANS NEW  GOOGLESTRATEGY
+/*
+CA :
+new User({googleId: profile.id}).save()
+.then(user => done(null, user))  //va envoyer ca a passport.serializeUser avec le user instance
+}*/
+DONC :
+
+ passport.serializeUser((user, done) => {
+   done(null, user.id)
+ });
+
+//meme chose ici pour le out.
+ passport.deserializeUser((id, done) => {
+   User.findById(id)
+    .then(user => {
+      done(null, user);
+    });
+ });
+
 passport.use(
   new GoogleStrategy(
     {
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
       callbackURL: '/auth/google/callback'
-    },
-    // (accessToken) => {
-    //   console.log(accessToken); ////4 - RENDU ICI ON A ACCES.
-    // }
-    (accessToken, refreshToken, profile, done) => {
-      console.log('accessToken:', accessToken); // retourne le token
-      console.log('refreshToken:', refreshToken); // retourne la possibilité de faire revivre un token
-      console.log('profile:', profile); //le data
+    }, (accessToken, refreshToken, profile, done) => {
+      //VERIFIER SI IL EXISTE.
+      User.findOne({googleId: profile.id})
+      .then((userExistant) => {
+        if(userExistant) {
+          // DONC IL EXISTE
+          done(null, userExistant); // premier arg de done est err, 2 ieme on retourne le user.
+        } else {
+          // IL EXISTE PAS, ON DOIT LE CREER
+          new User({googleId: profile.id})
+          .save()
+          .then(user => done(null, user))  //va envoyer ca a passport.serializeUser avec le user instance
+        }
+      })
     }
   )
 );
 
 
-//2
-app.get('/auth/google', passport.authenticate('google', {
-    scope: ['profile', 'email']  //ce qu on veut ceci est un preset,on pourrait demander pour lire les email..
+
+
+/************************************ DERNIER ETAPE  ************************************/
+
+Dans les routes on va en ajouter une , ca pourrait etre n importe ou, on va verifier si on a le user :
+
+
+  //devrait nous retourner le user loguer.
+    app.get('/api/utilisateur_actuel', (req,res) => {
+      res.send(req.user);  //user est un obj de passport, qu il ajoute lors de login, pas le model
+    });
+
+Et une derniere route pour le logout du user, avec sur req, d autre fn depassport qui s ajoute
+
+  app.get('/api/logout', (req,res) => {
+     req.logout() // comme user, passport ajoute des function a req, dont logout... qui hmm logout..
+  });
+
+
+
+  donc http:localhost:3000/api/utilisateur_actuel oui maintenant sur le res on a le user en cour  {"_id":"59af441cafb6fcafa61752e7","googleId":"108399082281546274727","__v":0}
+
+mais si on va sur '/api/logout' et on retourne sur 'api/utilisateur_actuel' , on aura plus rien , le token est parti !
+
+
+
+  *////////////////The end.\\\\\\\\\\\\\\\\\\*
+
+
+
+
+Donc techniquement ici on pourait rapidement ajouter facebook , linkedin , etc...
+
+ajouter un fn dans passport newFacebookStrategy et dans authRoutes.js ajout d un app.get :
+app.get(
+  '/auth/facebook',
+  passport.authenticate('facebook', {
+    scope: ['profile', 'email']
   })
 );
 
-/*CE QUI REVIENT:
-The redirect URI in the request, http://localhost:3000/auth/google/callback, does not match the ones authorized for the OAuth client. Visit https://console.developers.google.com/apis/credentials/oauthclient/755010499514-qcbq7t87s6m7moc9kua3tipbbr9o0kev.apps.googleusercontent.com?project=755010499514 to update the authorized redirect URIs.
 
-DONC EN GROS, CETTE ADRESSE LA EST PAS AUTORISEE PAR GOOGLE. ON DOIT LE FAIRE DANS LE COMPTE DE L API.
-CA SERA SIMPLE DE FAKER UN CLIENT ID DE AIRBNB PAR EXEMPLE, ET DE REVOYER ET PRENDRE L INFO SUR NOTRE SITE SINON.
-GOOGLE VERIFIE L ADRESSE REDIRECT_URI POUR CONTRER LE PIRATAGE D INFO.
+//////////////plusieurs gmail pour une personne.
+
+note: si un user a plusieurs email GMAIL, il y aura quand meme un seul profile id:
+profile:
+ { id: 'f10839908228154627u4727' ...
+
+ ce qui est cool.
 
 
 
-https://accounts.google.com/o/oauth2/v2/auth?response_type=code&
-redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fgoogle%2Fcallback&   <-callbackURL
-scope=profile%20email&
-client_id=755010499514-qcbq7t87s6m7moc9kua3tipbbr9o0kev.apps.googleusercontent.com
-*/
 
-//maintenant google apres choisir son compte va aller la avec le code du user.
-//3
-app.get('/auth/google/callback', passport.authenticate('google'));
 
-app.listen(port, () => {
-  console.log(`ca roule sur ${port}`);
-});
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+                              ///FIN /////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+   ///EXTRA la securite, avoir des keys separer d un coup qu on se fait voler nos shit et la key locale. donc faire une keys prod et dev
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+PROD / DEV
+
+donc tout faire en double=>
+
+
+refaire un db dans mlbas avec un different user-mot de passe=>
+
+dans CONSOLE.DEVELOPERS.GOOGLE.COM maintenant:
+on refait tout la meme chose que cité plus haut :
+
+Origines JavaScript autorisées
+ ET
+URI de redirection autorisés: ici ca sera different... au lieu de localhost ca sera heroku :
+
+Dans le terminal tuer le serveur et :
+heroku open
+
+prendre l adresse :
+
+
+ORIGINES JAVASCRIPT AUTORISÉES: https://fullstack-axe-z.herokuapp.com
+
+URI DE REDIRECTION AUTORISÉS: https://fullstack-axe-z.herokuapp.com/auth/google/callback
+
+PAS METTRE DE / a la fin !!
+
+
+KEY.JS :
+
+if(process_env.NODE_ENV === 'production') {
+  //retourne les cles PROD
+  module.exports = require('./prod')
+} else {
+  //retourne les cles DEV, donc ici on export notre importation. ..
+  module.exports = require('./dev')
+}
+
+DEV.JS, VA PRENDRE LES CLEF DEV QU ON AVAIT AVANT DANS KEYS.JS
+
+
+ET PROD.JS, ON VA FAIRE AUTREMENT POUR ASSURER QUE SI ON SE FAIT VOLER...
+///PRODUCTION
+module.exports = {
+  googleClientID: process_env.GOOGLE_CLIENT_ID,
+  googleClientSecret:  process_env.GOOGLE_CLIENT_SECRET,
+  mongoUri: process_env.MONGO_URI,
+  cookieKey: process_env.COOKIE_KEY
+}
+
+
+ON VA MAINTENANT UPLOADER CES FICHIERS (KEYS ET PROD) SUR GITHUB ET HEROOKU , HEROKU EN A DE BESOIN !!!
+Donc dans .gitignore config/dev.js est le seul qu on evite.
+
+
+/************************************ ajuster les variable dasn heroku  ************************************/
+
+1- aller sur heroku.com
+2- choisir la bonne app, et aller dans settings
+3- Config Variables: reveal Config Vars , click
+4- entre les key / value de GOOGLE_CLIENT_ID ,  GOOGLE_CLIENT_SECRET, MONGO_URI et COOKIE_KEY
+5- faire add a chaque fois.
