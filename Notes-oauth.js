@@ -527,9 +527,14 @@ A cause du HTTPS qui est necessaire quand on est pas a localhost(pour arranger :
         clientID: keys.googleClientID,
         clientSecret: keys.googleClientSecret,
         callbackURL: '/auth/google/callback',
-        proxy: true             // <- ca ca 
+        proxy: true             // <- ca ca
 
 
+REfaire les push Git hub et heroku, et voila ca marche !!
+
+
+https://fullstack-axe-z.herokuapp.com/auth/google  selectionne le compte , ensuite :
+https://fullstack-axe-z.herokuapp.com/api/utilisateur_actuel === {"_id":"59b0864ba28749001266a6fa","googleId":"108399082281546274727","__v":0}
 
 
 Une fois fait , good job !

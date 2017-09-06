@@ -11,14 +11,16 @@ module.exports = app => {
   app.get('/auth/google/callback', passport.authenticate('google'));
 
 
+  app.get('/api/logout', (req,res) => {
+     req.logout() // comme user, passport ajoute des function a req, dont logout... qui hmm logout..
+  });
+
   //devrait nous retourner le user loguer.
     app.get('/api/utilisateur_actuel', (req,res) => {
       res.send(req.user);  //user est un obj de passport, qu il ajoute lors de login
     });
 
-  app.get('/api/logout', (req,res) => {
-     req.logout() // comme user, passport ajoute des function a req, dont logout... qui hmm logout..
-  });
+
 
 };
 
