@@ -488,5 +488,49 @@ Donc dans .gitignore config/dev.js est le seul qu on evite.
 5- faire add a chaque fois.
 
 
+
+Maintenant on push a git et heroku
+
+on ouvre l app sur heroku
+et on va tenter simplement de se logguer :
+https://fullstack-axe-z.herokuapp.com/auth/google  , comme on faisait avant .
+
+
+
+on aura :
+
+Error: redirect_uri_mismatch
+
+The redirect URI in the request, http://fullstack-axe-z.herokuapp.com/auth/google/callback, does not match the ones authorized for the OAuth client. Visit https://console.developers.google.com/apis/credentials/oauthclient/166152619192-v3hjm8tso1g1uui7hp68bm4767cf0h29.apps.googleusercontent.com?project=166152619192 to update the authorized redirect URIs.
+
+
+A cause du HTTPS qui est necessaire quand on est pas a localhost(pour arranger :
+
+ le probleme se creer dans passport.js et specifiquement
+
+ new GoogleStrategy(
+   {
+     clientID: keys.googleClientID,
+     clientSecret: keys.googleClientSecret,
+     callbackURL: '/auth/google/callback' // <- lala
+
+  ON UTILISE UN PATH RELATIF, ET LUI FAIT CE QU IL VEUT AU LIEU DE CE QU IL FAUT :
+  LA RAISON EST CELLE CI :  PARCE QUE ENTRE LE BROWSER ET LE DATA IL Y A UN PROXY D HEROKU, ET OU IL Y A UN PROXY , C EST JUGER PAS SAFE...   MAINTENANT, SOIT QU ON TRUST OU PAS HEROKU, NOTRE APP EST SUR HEROKU, DONC ON VA LE TRUSTER PEUT-IMPORTE...
+
+  DONC LA SOLUTION OU LES SOLUTIONS : ON POURRAIT S AJOUTER DES KEYS AVEC L ADRESSE COMPLET DANS PROD OU DEV
+  MAIS Y A UNE AUTRE OPTION QUI EST D AJOUTER :
+
+
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: keys.googleClientID,
+        clientSecret: keys.googleClientSecret,
+        callbackURL: '/auth/google/callback',
+        proxy: true             // <- ca ca 
+
+
+
+
 Une fois fait , good job !
 le reste va se passer dans le script de package, si on lance avec prod ou dev.

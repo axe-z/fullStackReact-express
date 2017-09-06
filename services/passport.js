@@ -10,7 +10,7 @@ const { User } = require('./../models/User.js');
    done(null, user.id)
  });
 
-//meme chose ici pour le out. 
+//meme chose ici pour le out.
  passport.deserializeUser((id, done) => {
    User.findById(id)
     .then(user => {
@@ -26,7 +26,8 @@ passport.use(
     {
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
-      callbackURL: '/auth/google/callback'
+      callbackURL: '/auth/google/callback',
+      proxy: true
     }, (accessToken, refreshToken, profile, done) => {
       //VERIFIER SI IL EXISTE.
       User.findOne({googleId: profile.id})
