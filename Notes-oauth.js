@@ -453,7 +453,7 @@ PAS METTRE DE / a la fin !!
 
 KEY.JS :
 
-if(process_env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV === 'production') {
   //retourne les cles PROD
   module.exports = require('./prod')
 } else {
@@ -467,11 +467,12 @@ DEV.JS, VA PRENDRE LES CLEF DEV QU ON AVAIT AVANT DANS KEYS.JS
 ET PROD.JS, ON VA FAIRE AUTREMENT POUR ASSURER QUE SI ON SE FAIT VOLER...
 ///PRODUCTION
 module.exports = {
-  googleClientID: process_env.GOOGLE_CLIENT_ID,
-  googleClientSecret:  process_env.GOOGLE_CLIENT_SECRET,
-  mongoUri: process_env.MONGO_URI,
-  cookieKey: process_env.COOKIE_KEY
+  googleClientID: process.env.GOOGLE_CLIENT_ID,
+  googleClientSecret:  process.env.GOOGLE_CLIENT_SECRET,
+  mongoUri: process.env.MONGO_URI,
+  cookieKey: process.env.COOKIE_KEY
 }
+
 
 
 ON VA MAINTENANT UPLOADER CES FICHIERS (KEYS ET PROD) SUR GITHUB ET HEROOKU , HEROKU EN A DE BESOIN !!!
@@ -485,3 +486,7 @@ Donc dans .gitignore config/dev.js est le seul qu on evite.
 3- Config Variables: reveal Config Vars , click
 4- entre les key / value de GOOGLE_CLIENT_ID ,  GOOGLE_CLIENT_SECRET, MONGO_URI et COOKIE_KEY
 5- faire add a chaque fois.
+
+
+Une fois fait , good job !
+le reste va se passer dans le script de package, si on lance avec prod ou dev.

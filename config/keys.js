@@ -1,5 +1,5 @@
 
-if(process_env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   //retourne les cles PROD
   module.exports = require('./prod')
 } else {
