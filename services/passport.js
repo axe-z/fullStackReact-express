@@ -20,7 +20,39 @@ const { User } = require('./../models/User.js');
 
 /************************************ initialisation de passport ************************************/
 
-//1
+//1 version Async awaits
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: keys.googleClientID,
+      clientSecret: keys.googleClientSecret,
+      callbackURL: '/auth/google/callback',
+      proxy: true
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      const userExistant = await User.findOne({ googleId: profile.id });
+      if (userExistant) {
+        return done(null, userExistant);  /// si on return , pas besoin de else .
+      }
+      const user = await new User({ googleId: profile.id }).save();
+      done(null, user);
+    }
+  )
+);
+
+
+
+
+//MIDDLEWARE GOOGLE , CE QUI ARRIVE QUAND ON VA SUR LES ROUTES DE AUTH.
+
+
+
+
+
+/*
+
+version promise
+
 passport.use(
   new GoogleStrategy(
     {
@@ -44,24 +76,4 @@ passport.use(
       })
     }
   )
-);
-
-//MIDDLEWARE GOOGLE , CE QUI ARRIVE QUAND ON VA SUR LES ROUTES DE AUTH.
-
-
-
-
-
-//  passport.use(
-//   new GoogleStrategy(
-//     {
-//       clientID: keys.googleClientID,
-//       clientSecret: keys.googleClientSecret,
-//       callbackURL: '/auth/google/callback'
-//     },(accessToken, refreshToken, profile, done) => {
-//       console.log('accessToken:', accessToken); // retourne le token
-//       console.log('refreshToken:', refreshToken); // retourne la possibilité de faire revivre un token
-//       console.log('profile:', profile); //le data
-//     }
-//   )
-// );
+);*/
