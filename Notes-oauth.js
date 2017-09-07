@@ -530,7 +530,7 @@ A cause du HTTPS qui est necessaire quand on est pas a localhost(pour arranger :
         proxy: true             // <- ca ca
 
 
-REfaire les push Git hub et heroku, et voila ca marche !!
+Refaire les push Git hub et heroku, et voila ca marche !!
 
 
 https://fullstack-axe-z.herokuapp.com/auth/google  selectionne le compte , ensuite :
