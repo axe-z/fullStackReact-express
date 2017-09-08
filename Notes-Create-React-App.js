@@ -113,5 +113,11 @@ la version production applatie tout , et le bundle va comprendre que /auth/googl
 ca reste mieux que d avoir a faire des if(process.env === dev) else...
 
 /**************** ****comment en gardant les path relatif pointer la bonne chose  **************************/
- /**************** ****comment en gardant les path relatif pointer la bonne chose  **************************/
-  /**************** ****comment en gardant les path relatif pointer la bonne chose  **************************/
+/**************** ****comment en gardant les path relatif pointer la bonne chose  **************************/
+/**************** ****comment en gardant les path relatif pointer la bonne chose  **************************/
+
+
+/************************************ ROULER REACT ************************************/
+
+index.js est  le fichier a mettre par defaut.
+si jamais on a un probleme et que tout devrait bien aller, seulement detruire package.json.lock et refaire npm install dans le rep CLIENT
