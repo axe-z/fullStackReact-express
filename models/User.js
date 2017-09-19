@@ -6,7 +6,10 @@ const { Schema } = mongoose;
 //on peut toujours ajouter des champs plus tard
 const userSchema = new Schema({
   googleId: String,
-  name: String
+  credits: {
+    type: Number,
+    default: 0
+  }
 })
 
 

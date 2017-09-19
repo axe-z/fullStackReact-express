@@ -710,3 +710,202 @@ le reste va se passer dans le script de package, si on lance avec prod ou dev.
  /**************** ****comment en gardant les path relatif pointer la bonne chose  **************************/
   /**************** ****comment en gardant les path relatif pointer la bonne chose  **************************/
    /**************** ****comment en gardant les path relatif pointer la bonne chose  **************************/
+
+
+
+pour aller voir l uitilisateur actuel :
+path
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": {
+    "/auth/google": {
+      "target": "http://localhost:5000"
+    },
+    "/api/*": {
+      "target": "http://localhost:5000"
+    }
+  },
+  ....
+
+
+
+
+  export const fetchUser = (truc) => async (dispatch) => { //retourne directement la deuxieme fn
+    const res = await axios.get('/api/utilisateur_actuel');
+   console.log(truc)
+    dispatch({ type: FETCH_USER, payload: res.data });
+  };
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+                              /*** rappel sur redux-thunk ***//////
+///////////////////////////////////////////////////////////////////////////////////////////////
+FLOW EST ACTION(obj) A REDUCER A STORE D ORDINAIRE
+
+MAIS AVEC THUNK , CA DEVIENT ACTION A DISPATCH(THUNK prend pas un obj, mais une funcion) AU STORE, ET DU STORE AU REDUCER.
+
+SI ON EST A FAIRE DU ASYN ( COMME UN CALL A UN API ), ON DOIT UTILISER THUNK, ET POUR DECLENCHER THUNK IL FAUT QUE L ACTION CREATOR RETOURNE UN FUNCTION ET NON PAS UN OBJ. ENSUITE CETTE FUNCTION DOIT LAISSER A DISPATCH LE SOIN D ENVOYER L OBJ, QUI CONTIENT MAINTENANT LE DATA DU CALL ASYNC QU ON A FAIT , SOIT AVEC FETCH OU AXIOS.
+!!!IMPORTANT, SI AU LIEU DE RETOURNER UN OBJ, POUR UNE ACTION REGULIERE, L ACTION CREATOR RETOURNE UN FUNCTION, REACT-THUNK VA S ENCLENCHER !! ET EN PLUS IL VA PASSER DISPATCH A LA FUNCTION, L AJOUTER.
+ENCORE FAUT IL QUE LE THUNK SOIT ACTIVER DANS LE STORE, DANS LES APPLYMIDDLWARE :
+const store = createStore(rootReducer, {}, applyMiddleware(reduxThunk));
+
+
+DONC LES THUNK ACTIONS , DEVIENNENT DES FUNCTION QUI RETOURNE UNE FUNCTION QUI DISPATCH L OBJ ACTION QUAND IL EST PRET.
+
+
+
+avec axios et dispatch (pour thunk ) et a-a
+redux thunk : DONC FN QUI RETOURNE UNE FN (POUR ACTIVER THUNK) QUI LUI INJECTE DISPATCH DANS CA , ET DISPATCH ENVOIE L OBJ FINAL.
+
+export const fetchUser = (truc) => async (dispatch) => { //retourne directement la deuxieme fn
+  const res = await axios.get('/api/utilisateur_actuel');
+ console.log(truc)
+  dispatch({ type: FETCH_USER, payload: res.data });
+};
+
+OU SANS A-A :DONC FN QUI RETOURNE UNE FN (POUR ACTIVER THUNK) QUI LUI INJECTE DISPATCH DANS CA , ET DISPATCH ENVOIE L OBJ FINAL.
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+                              /*** rappel sur redux-thunk ***//////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+  APP.JS
+
+
+  class App extends Component {
+    componentDidMount(){ ///bonne place pour faire un call ajax.
+      this.props.fetchUser('envoyer le fetch du user'); //truc
+    }
+    render() {
+      return (
+        <div className="container">{/* doit avoir un wrapper  */}
+           <BrowserRouter>
+             <div>
+             <Header /> {/* va etre partout  */}
+              <Route exact={true} path="/" component={Landing} /> {/*ou juste exact */}
+             <Route exact path="/surveys" component={Dashboard} />   {/*on voit landing si pas EXACT / est dans le chemin  */}
+             <Route path="/surveys/new" component={SurveyNew} /> {/*Dashboard est inclut si pas exact a Dashboard */}
+             </div>
+           </BrowserRouter>
+        </div>
+      );
+    }
+  }
+
+
+  //mapStateToProps est pas utilisé donc null. mapDispatchToProps met sur props nos actions , puisque notre action dispatch deja et a pas VRAIMENT de reducer mais y en a un... , on passe actions directement (call ajax axios)
+  export default connect(null, actions)(App)
+
+
+
+AUTHREDUCER.JS
+
+//on le part a null, comme ca si le request marche pas ou chie, on retourne fuck all nifaux ni vrai .
+//on retourne le res.data, ou false(pas loguer, payload est la mais vide). ca s en va sur le state.auth
+
+ export default function(state = null, action) {
+   switch (action.type) {
+     case FETCH_USER:
+       return  action.payload  || false;
+     default:
+       return state;
+   }
+ }
+
+
+DANS LA CONSOLE ON AURA MAINTENANT :
+/*
+action:  {type: "fetch_user", payload: {…}} :
+
+payload: googleId: '108399082281546274727';
+__v: 0;
+_id: '59af441cafb6fcafa61752e7';
+*/
+
+
+ENSUITE HEADER.JS , ON VEUT CHANGER L HEADER SI LOGGUER OU PAS
+class Header extends Component {
+  renderContent(){
+    //puisque 3 state possible null, good ou false on va mettre un switch, break marche pas..
+    switch (this.props.auth) {
+      case null:
+        return  //rien a l ecran
+      case false:
+        return  (<li>
+          <a href="/auth/google">Login Avec Google</a>
+        </li>)
+      default:
+        return (<li>
+          <a href="/api/logout">Quitter </a>
+        </li>)
+    }
+  }
+  render() {
+  //  console.log('map', this.props)  //si loguer on a le id, sinon false
+    return (
+      <nav className="nav-extended">
+        <div className="nav-wrapper">
+          <a href="/" className="left brand-logo">  Email-Pro  </a>
+          <ul className="right">
+          {this.renderContent()}
+            {/* <li>
+              <a href="/auth/google">Login Avec Google</a>
+            </li> */}
+          </ul>
+        </div>
+      </nav>
+    );
+  }
+}
+//mapStateToProps: donne acces au data du store(state de redux) sur le state de react
+function mapStateToProps(state) {
+  return {
+    auth: state.auth
+  };
+}
+export default connect(mapStateToProps)(Header)
+
+
+
+
+FAIRE LE ROUTES POUR ARRIVER AU BONNE PLACE AVEC REDIRECT
+authRoutes
+
+module.exports = app => {
+...
+  //route que le loggue prend une fois authentifié
+  app.get('/auth/google/callback', passport.authenticate('google'), (req,res) => {
+    res.redirect('/surveys');  //Va vers Survey, pour worker tse .
+  });
+
+...
+};
+
+
+
+
+2 MANIERE DE FAIRE LE LOGOUT, ON POURRAIT PRENDRE L AUTHROUTES ET FAIRE COYAGE L UTILISATEUR DE /API/LOGOUT QUI REDIRECT SUR /, OU PLUS COMPLEX, NE PAS LE CHANGER DE PAGE.
+
+on va etre lache :
+//devrait nous retourner le user loguer.
+  app.get('/api/utilisateur_actuel', (req,res) => {
+    res.send(req.user);  //user est un obj de passport, qu il ajoute lors de login
+  });
+};
+
+
+
+FAIRE UN LINK CONTEXTUEL :
+
+dans le Header.js
+on a acces a this.props.auth , donc si le user est login , on clikant sur le link, on va dans la portion de travail ( surveys ) si il est log out, on va retourner a /
+
+  import { Link } from 'react-router-dom';
+render() {
+  return (
+...
+
+        <Link to={this.props.auth ? '/surveys' : '/'}  //avec un ternary
+  ...
+        {this.renderContent()}

@@ -1,25 +1,30 @@
 const passport = require('passport');
 //app est de express , donc on veut ramener ca sur le serveur ou y a express.
 
+//app == express
 module.exports = app => {
   app.get(
     '/auth/google',
     passport.authenticate('google', {
       scope: ['profile', 'email']
-    })
+    })//promise.
   );
-  app.get('/auth/google/callback', passport.authenticate('google'));
+  app.get('/auth/google/callback', passport.authenticate('google'), (req,res) => {
+    res.redirect('/surveys');
+  });
 
  // comme user, passport ajoute des function a req, dont logout... qui hmm logout..
  app.get('/api/logout', (req, res) => {
-   req.logout();
-   res.redirect('/');
+   req.logout(); //fn passport
+   res.redirect('/'); //plus facile , mais moins vite
  });
 
 
   //devrait nous retourner le user loguer.
     app.get('/api/utilisateur_actuel', (req,res) => {
-      res.send(req.user);  //user est un obj de passport, qu il ajoute lors de login
+
+      res.send(req.user);  //user est un obj pour passport, qu il ajoute lors de login
+      console.log('App.js, lance fetchUser: qui regarde /utilisateur_actuel ', req.user) //on a acces au user .
     });
 };
 
