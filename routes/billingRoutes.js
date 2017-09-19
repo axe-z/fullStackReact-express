@@ -1,8 +1,10 @@
 
-const keys = require('../config/keys');
+const keys = require('./../config/keys');
 //console.log('cle', keys.StripeSecure) works..
 //const stripe = require('stripe')(keys.StripeSecure);  //on lui deonne la secretkey
-const stripe = require('stripe')(keys.stripeSecretKey);
+//const stripe = require('stripe')(keys.stripeSecretKey);
+const stripe = require('stripe')('sk_test_Sbs33niyEuaJZeAfo8MLfZ12');
+
 const requireLogin= require('../middlewares/requireLogin'); //middleware qu on a fait qui verifie si user ou pas.
 
 module.exports = app => {
@@ -14,6 +16,7 @@ module.exports = app => {
       description: '$5 pour 5 crédits',
       source: req.body.id
     });
+    console.log(req.body.id)
     //console.log(charge); // on recoit un charge bien parser.
     //console.log(req.user) //on a acces au user .
 
@@ -23,6 +26,3 @@ module.exports = app => {
       res.send(user)
   });
 };
-
-
- 
