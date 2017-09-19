@@ -3,7 +3,9 @@ import StripeCheckout from 'react-stripe-checkout';
 import { connect } from 'react-redux';
 import * as actions from '../actions'; //import de tout le rep, ouff action et types (nom prefait)
  class Payments extends Component {
+
   render() {
+       console.log("NOTRE KEY EST", process.env.REACT_APP_STRIPE_KEY )
     return (
       <StripeCheckout
         name = "Email-Pro"

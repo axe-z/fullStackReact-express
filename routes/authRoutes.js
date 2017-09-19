@@ -24,7 +24,7 @@ module.exports = app => {
     app.get('/api/utilisateur_actuel', (req,res) => {
 
       res.send(req.user);  //user est un obj pour passport, qu il ajoute lors de login
-      console.log('App.js, lance fetchUser: qui regarde /utilisateur_actuel ', req.user) //on a acces au user .
+    //  console.log('App.js, lance fetchUser: qui regarde /utilisateur_actuel ', req.user) //on a acces au user .
     });
 };
 
