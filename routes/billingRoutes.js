@@ -1,6 +1,8 @@
 
 const keys = require('../config/keys');
-const stripe = require('stripe')(keys.StripeSecure);  //on lui deonne la secretkey
+//console.log('cle', keys.StripeSecure) works..
+//const stripe = require('stripe')(keys.StripeSecure);  //on lui deonne la secretkey
+const stripe = require('stripe')(keys.stripeSecretKey);
 const requireLogin= require('../middlewares/requireLogin'); //middleware qu on a fait qui verifie si user ou pas.
 
 module.exports = app => {

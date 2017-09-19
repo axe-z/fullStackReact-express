@@ -374,7 +374,7 @@ heroku config:set NPM_CONFIG_PRODUCTION=false
 
 
 le seul package.json utilise par heroku est lui server,
---prefix client veut dire dans le rep client . 
+--prefix client veut dire dans le rep client .
 donc dans celui ci :
 {
   "name": "fullstack",
@@ -393,3 +393,17 @@ donc dans celui ci :
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
 ...
+
+
+
+ensuite on peut pusher a github, avec le rep build de client, non -inclut , heroku va se charger de ca bientot.
+
+ensuite git push heroku master,
+pendant le push heroku va tout installer. et meme faire le build.
+
+magique !
+
+heroku open, et l app va y etre avec les fichier build !
+le css nest pas dans le header, mais bien dans son fichier <link href="/static/css/main.3b9edbe2.css" rel="stylesheet">
+
+moins complex que prevus. 
