@@ -12,7 +12,7 @@ const Dashboard = () => {
         </Link>
       </div>
     </div>
-  );
+  );      
 };
 
 export default Dashboard;

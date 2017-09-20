@@ -406,4 +406,7 @@ magique !
 heroku open, et l app va y etre avec les fichier build !
 le css nest pas dans le header, mais bien dans son fichier <link href="/static/css/main.3b9edbe2.css" rel="stylesheet">
 
-moins complex que prevus. 
+moins complex que prevus.
+
+
+faire attention d y mettre les .env.development et production .

@@ -5,7 +5,7 @@ import * as actions from '../actions'; //import de tout le rep, ouff action et t
  class Payments extends Component {
 
   render() {
-       console.log("NOTRE KEY EST", process.env.REACT_APP_STRIPE_KEY )
+      // console.log("NOTRE KEY EST", process.env.REACT_APP_STRIPE_KEY )
     return (
       <StripeCheckout
         name = "Email-Pro"
