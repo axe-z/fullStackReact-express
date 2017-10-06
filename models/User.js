@@ -12,7 +12,7 @@ const userSchema = new Schema({
   }
 })
 
-
+//mongoose.model('users', userSchema);
 const User = mongoose.model('users', userSchema);
 //toujours mettre le model en lowercase, mlabs va le faire sinon
 

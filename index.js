@@ -8,6 +8,8 @@ const passport = require('passport');
 
 require('./services/passport'); //on veut juste que ca roule QUAND BESOIN ... donc pas de const pas d export.
 
+const { User } = require('./models/User');
+const { Survey } = require('./models/Survey');
 
 const app = express(); //PARTIR EXPRESS.
 
@@ -25,9 +27,14 @@ app.use(passport.session());  //pour activer l utilisation de cookies
 ///LES ROUTES LOGIN GOOGLE AUTH // est une function donc de module.export qui demande express pour faire des app.get..;
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
+ require('./routes/surveyRoutes')(app);
+
 
 //conection mongoose emailpro-axe-z
-const { User } = require('./models/User');
+// const { User } = require('./models/User');
+// require('./models/Survey');
+
+
 
 mongoose.Promise = global.Promise;
 

@@ -5,28 +5,8 @@ import { connect } from 'react-redux';
 import * as actions from '../actions'; //import de tout le rep, ouff action et types (nom prefait)
 import Header from './Header';
 import Landing from './Landing';
-
-
-
-const Dashboard = () => {
-  return (
-    <div className="Dashboard">
-      <h2>Dashboard</h2>
-    </div>
-  );
-};
-
-const SurveyNew = () => {
-  return (
-    <div className="SurveyNew">
-      <h2>SurveyNew</h2>
-    </div>
-  );
-};
-
-
-
-
+import Dashboard from './Dashboard';
+import SurveyNew from './surveys/SurveyNew';
 
 
 
@@ -37,16 +17,16 @@ class App extends Component {
   }
   render() {
     return (
-      <div className="container">{/* doit avoir un wrapper  */}
+
          <BrowserRouter>
-           <div>
+           <div className="container">
            <Header /> {/* va etre partout  */}
             <Route exact={true} path="/" component={Landing} /> {/*ou juste exact */}
            <Route exact path="/surveys" component={Dashboard} />   {/*on voit landing si pas EXACT / est dans le chemin  */}
            <Route path="/surveys/new" component={SurveyNew} /> {/*Dashboard est inclut si pas exact a Dashboard */}
            </div>
          </BrowserRouter>
-      </div>
+
     );
   }
 }

@@ -1,4 +1,5 @@
 ////CLIENT
+
 import 'materialize-css/dist/css/materialize.min.css'
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -8,7 +9,9 @@ import { createStore, applyMiddleware } from 'redux';
 import reduxThunk from 'redux-thunk'
 import rootReducer from './reducers/rootReducer.js';
 
-
+//enelever une fois le dev fait
+import axios from 'axios';
+window.axios = axios;
 
 const { render } = ReactDOM;
 
@@ -17,7 +20,7 @@ const store = createStore(rootReducer, { }, applyMiddleware(reduxThunk));
 // eslint-disable-next-line
 let unsubscribe = store.subscribe(() => {
   var state = store.getState();
-  console.log('Nouveau state >', state); //sort a chaque changement
+   console.log('Nouveau state >', state); //sort a chaque changement
 });
 
 

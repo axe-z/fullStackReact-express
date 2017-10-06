@@ -1,9 +1,9 @@
 ////Action creator
 
 import axios from 'axios';
-import { FETCH_USER, /*FETCH_SURVEYS*/ } from './types';
+import { FETCH_USER,  FETCH_SURVEYS  } from './types';
 
-
+/*les actions, sont la pour nous aider a amener l info d une place a l autre, pour enregistrer dans la db . */
 
 //avec thunk
 
@@ -24,15 +24,21 @@ export const handleToken = token => async (dispatch) => {
 
 
 //
-// export const submitSurvey = (values, history) => async (dispatch) => {
-//   const res = await axios.post('/api/surveys', values);
-//
-//   history.push('/surveys');
-//   dispatch({ type: FETCH_USER, payload: res.data });
-// };
-//
-// export const fetchSurveys = () => async (dispatch) => {
-//   const res = await axios.get('/api/surveys');
-//
-//   dispatch({ type: FETCH_SURVEYS, payload: res.data });
-// };
+export const submitSurvey = (values, history) => async (dispatch) => {
+  const res = await axios.post('/api/surveys', values);
+
+  history.push('/surveys');
+  dispatch({ type: FETCH_USER, payload: res.data });
+  //console.log('res de submitSurvey values',  values )
+  //values //{title: "gg", subject: "gg", body: "gg", recipients: "benoitlafrance35@gmail.com"}
+  //console.log('res de submitSurvey values',  res.data )
+  //res.data//{_id: "59c4448c4294470e747ddb25", googleId: "108399082281546274727", __v: 0, credits: 2}
+};
+
+
+//va prendre l info sur l api/surveys et lke mettre dans le dispatch redux pour react
+export const fetchSurveys = () => async (dispatch) => {
+  const res = await axios.get('/api/surveys');
+
+  dispatch({ type: FETCH_SURVEYS, payload: res.data });
+};

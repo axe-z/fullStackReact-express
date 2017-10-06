@@ -5,6 +5,14 @@
 
 https://github.com/facebookincubator/create-react-app
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+                        Si y a une regle de eslint qui gosse...
+                              DANS NODE_MODULE - ESLINT - INDEX.JS
+                              ensuite si tu trouves, mettre a off ou false..
+                              /////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 sudo npm install -g create-react-app
 
 CECI INSTALL UN PROGRAM QUI PERMET DE CREER LE KIT COMPLET DE DEV.
@@ -410,3 +418,37 @@ moins complex que prevus.
 
 
 faire attention d y mettre les .env.development et production .
+
+
+/************************************ materializecss ************************************/
+pour utiliser les icon
+
+ajouter dans index.html de public :
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+ ensuite dans react, c est le mot, le innerhtml qui determine l icon :
+ <i className="material-icons">add</i> donne un : +
+
+
+
+
+/************************************ CRA et le state ************************************/
+
+Create-React-App, cra, a un truc babel, qui permet de gerer les State autrement=>
+
+class SurveyNew extends Component {
+  //vieille maniere.
+  constructor (props){
+    super(props)
+
+    this.state= {
+      new : false
+    }
+  }
+
+
+DEVIENT SIMPLEMENT
+class SurveyNew extends Component {
+
+state = { truc: false }; //that's it . pu besoin de constructor.. 
